@@ -86,23 +86,16 @@ const Pagination = ({
                 <span className="text-[14px] text-[#666666] font-inter">
                     Hiển thị:
                 </span>
-                <div className="relative">
-                    <select
-                        value={size}
-                        onChange={handlePageSizeChange}
-                        className="w-[70px] h-8 px-[18px] py-2 bg-white border border-[#E0E0E0] rounded text-[14px] text-black appearance-none cursor-pointer focus:outline-none focus:border-[#262662]"
-                    >
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
-                            <path d="M1 1L5 5L9 1" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </div>
-                </div>
+                <select
+                    value={size}
+                    onChange={handlePageSizeChange}
+                    className="w-[70px] h-8 px-[10px] bg-white border border-[#E0E0E0] rounded-[7px] text-[14px] text-black cursor-pointer focus:outline-none focus:border-[#262662]"
+                >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
             </div>
 
             {/* Page Numbers */}
@@ -111,9 +104,9 @@ const Pagination = ({
                 <button
                     onClick={() => handlePageClick(1)}
                     disabled={currentPage === 1}
-                    className={`w-9 h-9 flex items-center justify-center bg-white border border-[#E0E0E0] rounded transition-all ${currentPage === 1
-                            ? 'opacity-40 cursor-not-allowed'
-                            : 'hover:border-[#262662] cursor-pointer'
+                    className={`w-9 h-9 flex items-center justify-center bg-white border border-[#E0E0E0] rounded transition-all cursor-pointer ${currentPage === 1
+                        ? 'opacity-40 cursor-not-allowed'
+                        : 'hover:border-[#262662] cursor-pointer'
                         }`}
                 >
                     <img
@@ -127,9 +120,9 @@ const Pagination = ({
                 <button
                     onClick={() => handlePageClick(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`w-9 h-9 flex items-center justify-center bg-white border border-[#E0E0E0] rounded transition-all ${currentPage === 1
-                            ? 'opacity-40 cursor-not-allowed'
-                            : 'hover:border-[#262662] cursor-pointer'
+                    className={`w-9 h-9 flex items-center justify-center bg-white border border-[#E0E0E0] rounded transition-all cursor-pointer${currentPage === 1
+                        ? 'opacity-40 cursor-not-allowed'
+                        : 'hover:border-[#262662] cursor-pointer'
                         }`}
                 >
                     <img
@@ -152,9 +145,9 @@ const Pagination = ({
                         <button
                             key={page}
                             onClick={() => handlePageClick(page)}
-                            className={`h-9 min-w-9 px-[11px] flex items-center justify-center rounded text-[14px] transition-all ${currentPage === page
-                                    ? 'bg-[#262662] border border-[#262662] text-white'
-                                    : 'bg-white border border-[#E0E0E0] text-[#666666] hover:border-[#262662]'
+                            className={`h-9 min-w-9 px-[11px] flex items-center justify-center rounded text-[14px] transition-all cursor-pointer ${currentPage === page
+                                ? 'bg-[#262662] border border-[#262662] text-white'
+                                : 'bg-white border border-[#E0E0E0] text-[#666666] hover:border-[#262662]'
                                 }`}
                         >
                             {page}
@@ -166,9 +159,9 @@ const Pagination = ({
                 <button
                     onClick={() => handlePageClick(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`w-9 h-9 flex items-center justify-center bg-white border border-[#E0E0E0] rounded transition-all ${currentPage === totalPages
-                            ? 'opacity-40 cursor-not-allowed'
-                            : 'hover:border-[#262662] cursor-pointer'
+                    className={`w-9 h-9 flex items-center justify-center bg-white border border-[#E0E0E0] rounded transition-all cursor-pointer ${currentPage === totalPages
+                        ? 'opacity-40 cursor-not-allowed'
+                        : 'hover:border-[#262662] cursor-pointer'
                         }`}
                 >
                     <img
