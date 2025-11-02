@@ -28,14 +28,14 @@ const SideBar = ({ userRole = 'USER' }) => {
             {/* Header */}
             <div className="px-5 py-7 border-b border-white/10">
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-[#262662] rounded-lg flex items-center justify-center border border-[#F1A027]">
+                    <div className="w-12 h-12  rounded-lg flex items-center justify-center border border-[#F1A027]">
                         <img src={uttLogo} alt="" />
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-sm font-bold text-white leading-tight">
+                        <h1 className="text-sm font-bold text-white leading-tight tracking-wide">
                             HỆ THỐNG
                         </h1>
-                        <h1 className="text-sm font-bold text-white leading-tight">
+                        <h1 className="text-sm font-bold text-white leading-tight tracking-wide">
                             VĂN BẰNG
                         </h1>
                     </div>
@@ -70,7 +70,8 @@ const SideBar = ({ userRole = 'USER' }) => {
                                         <img
                                             src={item.icon}
                                             alt={item.name}
-                                            className={`w-4 h-4 mr-4 ${isActive ? 'opacity-100' : 'opacity-80'}`}
+                                            className={`w-4 h-4 mr-4 transition-all ${isActive ? 'brightness-0 saturate-100' : 'opacity-80'}`}
+                                            style={isActive ? { filter: 'invert(64%) sepia(85%) saturate(537%) hue-rotate(358deg) brightness(98%) contrast(93%)' } : {}}
                                         />
                                     )}
 
@@ -113,7 +114,7 @@ const SideBar = ({ userRole = 'USER' }) => {
                 {/* Logout Button */}
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 h-[37px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors"
+                    className="w-full flex items-center justify-center gap-2 h-[37px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors cursor-pointer"
                 >
                     <img src={logoutIcon} alt="Logout" className="w-3 h-3" />
                     <span className="text-sm font-bold text-white">

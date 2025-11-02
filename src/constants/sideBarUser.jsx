@@ -2,6 +2,7 @@ import dashboardIcon from '../assets/icons/dashboard-icon.svg';
 import certificateIcon from '../assets/icons/certificate-icon.svg';
 import batchIcon from '../assets/icons/batch-icon.svg';
 import searchIcon from '../assets/icons/search-icon.svg';
+import verifyIcon from '../assets/icons/danger-icon.svg';
 
 const sideBarUser = [
     {
@@ -29,7 +30,7 @@ const sideBarUser = [
         id: 4,
         name: 'Xác thực',
         path: '/verify',
-        icon: null,
+        icon: verifyIcon,
         active: false
     },
     {
