@@ -16,6 +16,7 @@ import arrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import eyeIcon from '../../assets/icons/eye-icon.svg';
 import downloadIcon from '../../assets/icons/download-icon.svg';
 import trashIcon from '../../assets/icons/trash-icon.svg';
+import sun from '../../assets/icons/sun.svg';
 
 const DashboardPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,7 +61,7 @@ const DashboardPage = () => {
                     <div className="bg-white rounded-lg p-6 shadow-sm">
                         <div className="flex items-start gap-4">
                             <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(241, 160, 39, 0.1)' }}>
-                                <img src={fileTextIcon} alt="" className="w-5 h-5" style={{ filter: 'invert(64%) sepia(85%) saturate(537%) hue-rotate(358deg) brightness(98%) contrast(93%)' }} />
+                                <img src={fileTextIcon} alt="" className="w-5 h-5" s />
                             </div>
                             <div className="flex-1">
                                 <p className="text-[13px] text-[#666666] mb-2">Tổng chứng chỉ</p>
@@ -94,7 +95,7 @@ const DashboardPage = () => {
                     <div className="bg-white rounded-lg p-6 shadow-sm">
                         <div className="flex items-start gap-4">
                             <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-                                <img src={clockIcon} alt="" className="w-5 h-5" style={{ filter: 'invert(60%) sepia(85%) saturate(536%) hue-rotate(358deg) brightness(94%) contrast(92%)' }} />
+                                <img src={clockIcon} alt="" className="w-5 h-5" />
                             </div>
                             <div className="flex-1">
                                 <p className="text-[13px] text-[#666666] mb-2">Chờ xác thực</p>
@@ -134,7 +135,7 @@ const DashboardPage = () => {
                             <select
                                 value={selectedStatus}
                                 onChange={(e) => setSelectedStatus(e.target.value)}
-                                className="w-full h-10 px-5 bg-white border border-[#E0E0E0] rounded-[7px] text-sm font-medium focus:outline-none focus:border-[#262662]"
+                                className="w-full h-10 px-5 bg-white border border-[#E0E0E0] rounded-[7px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
                             >
                                 {statusOptions.map(option => (
                                     <option key={option.value} value={option.value}>{option.label}</option>
@@ -148,7 +149,7 @@ const DashboardPage = () => {
                             <select
                                 value={selectedMajor}
                                 onChange={(e) => setSelectedMajor(e.target.value)}
-                                className="w-full h-10 px-5 bg-white border border-[#E0E0E0] rounded-[7px] text-sm font-medium focus:outline-none focus:border-[#262662]"
+                                className="w-full h-10 px-5 bg-white border border-[#E0E0E0] rounded-[7px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
                             >
                                 {majorOptions.map(option => (
                                     <option key={option.value} value={option.value}>{option.label}</option>
