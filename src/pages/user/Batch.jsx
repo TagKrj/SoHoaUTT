@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
+import { createCertificatesBatch } from '../../services/certificateService';
 import pdf from '../../assets/icons/pdf.svg';
 
 const BatchPage = () => {
@@ -76,10 +77,28 @@ const BatchPage = () => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const data = JSON.parse(e.target.result);
+                    const rawData = JSON.parse(e.target.result);
+
+                    // Find certificates array from any structure
+                    let data;
+                    if (Array.isArray(rawData)) {
+                        // Direct array: [...]
+                        data = { certificates: rawData };
+                    } else if (rawData.certificates && Array.isArray(rawData.certificates)) {
+                        // { certificates: [...] }
+                        data = rawData;
+                    } else if (rawData.data && Array.isArray(rawData.data)) {
+                        // { data: [...] }
+                        data = { certificates: rawData.data };
+                    } else {
+                        alert('Cấu trúc JSON không hợp lệ. Cần có mảng "certificates" hoặc "data"');
+                        setJsonFile(null);
+                        return;
+                    }
+
                     setJsonData(data);
                 } catch (error) {
-                    alert('File JSON không hợp lệ');
+                    alert('File JSON không hợp lệ: ' + error.message);
                     setJsonFile(null);
                 }
             };
@@ -159,11 +178,60 @@ const BatchPage = () => {
     const handleConfirmSubmit = async () => {
         setIsProcessing(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsProcessing(false);
+        try {
+            // Validate jsonData and certificates
+            if (!jsonData || !jsonData.certificates || jsonData.certificates.length === 0) {
+                alert('❌ Dữ liệu JSON không hợp lệ hoặc trống');
+                setIsProcessing(false);
+                return;
+            }
+
+            // Validate PDF files
+            if (!pdfFiles || pdfFiles.length === 0) {
+                alert('❌ Vui lòng upload file PDF');
+                setIsProcessing(false);
+                return;
+            }
+
+            // Convert jsonData.certificates to API format
+            const certificatesData = jsonData.certificates.map(cert => {
+                // Support multiple field name variants
+                const studentID = cert.studentID || cert.studentId || cert.student_id || cert.mssv;
+                const name = cert.certificateName || cert.name || cert.fullName || cert.full_name;
+                const metaJson = cert.metaJson || cert.metadataJson || cert.metadata || '{}';
+
+                // Validate required fields
+                if (!studentID) {
+                    throw new Error(`Thiếu studentID. Dòng dữ liệu: ${JSON.stringify(cert)}`);
+                }
+                if (!name) {
+                    throw new Error(`Thiếu tên sinh viên. Dòng dữ liệu: ${JSON.stringify(cert)}`);
+                }
+
+                return {
+                    studentID,
+                    name,
+                    major: cert.major || cert.specialization || '',
+                    fileName: cert.fileName || cert.file_name || '',
+                    metaJson: typeof metaJson === 'string' ? metaJson : JSON.stringify(metaJson)
+                };
+            });
+
+            console.log('certificatesData mapped:', certificatesData);
+
+            // Call API
+            const response = await createCertificatesBatch(certificatesData, pdfFiles);
+
+            // Show success alert
+            alert(`✓ ${response.message}\n\nĐã tạo ${response.createdIDs?.length || certificatesData.length} chứng chỉ thành công!`);
+
+            // Move to success step
             setCurrentStep(4);
-        }, 2000);
+        } catch (error) {
+            alert(`❌ Lỗi: ${error.message}`);
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const handleReset = () => {
@@ -545,41 +613,7 @@ const BatchPage = () => {
                                 </div>
                             </div>
 
-                            {/* Certificate Preview */}
-                            {jsonData?.certificates && (
-                                <div>
-                                    <h3 className="text-base font-bold text-[#262662] mb-3">Danh sách chứng chỉ</h3>
-                                    <div className="border border-[#E0E0E0] rounded-lg overflow-hidden">
-                                        <table className="w-full">
-                                            <thead className="bg-[#F9FAFB] border-b border-[#E0E0E0]">
-                                                <tr>
-                                                    <th className="px-4 py-3 text-left text-xs font-bold text-[#666666] uppercase">STT</th>
-                                                    <th className="px-4 py-3 text-left text-xs font-bold text-[#666666] uppercase">Mã SV</th>
-                                                    <th className="px-4 py-3 text-left text-xs font-bold text-[#666666] uppercase">Họ và tên</th>
-                                                    <th className="px-4 py-3 text-left text-xs font-bold text-[#666666] uppercase">Email</th>
-                                                    <th className="px-4 py-3 text-left text-xs font-bold text-[#666666] uppercase">Tên chứng chỉ</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {jsonData.certificates.slice(0, 5).map((cert, index) => (
-                                                    <tr key={index} className="border-b border-[#E0E0E0] last:border-0">
-                                                        <td className="px-4 py-3 text-sm text-[#262662]">{index + 1}</td>
-                                                        <td className="px-4 py-3 text-sm font-medium text-[#262662]">{cert.studentId}</td>
-                                                        <td className="px-4 py-3 text-sm text-[#262662]">{cert.studentName}</td>
-                                                        <td className="px-4 py-3 text-sm text-[#666666]">{cert.email}</td>
-                                                        <td className="px-4 py-3 text-sm text-[#262662]">{cert.certificateName}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                        {jsonData.certificates.length > 5 && (
-                                            <div className="bg-[#F9FAFB] px-4 py-3 text-center text-sm text-[#666666]">
-                                                ... và {jsonData.certificates.length - 5} chứng chỉ khác
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+
                         </div>
 
                         {/* Action Buttons */}
@@ -666,13 +700,13 @@ const BatchPage = () => {
                             <div className="flex justify-center gap-3">
                                 <button
                                     onClick={handleReset}
-                                    className="px-6 py-3 bg-white border border-[#E0E0E0] rounded-lg font-bold text-[15px] text-[#262662] hover:bg-gray-50 transition-colors"
+                                    className="px-6 py-3 bg-white border border-[#E0E0E0] rounded-lg font-bold text-[15px] text-[#262662] hover:bg-gray-50 transition-colors cursor-pointer"
                                 >
                                     Cấp thêm chứng chỉ
                                 </button>
                                 <button
                                     onClick={() => window.location.href = '/dashboard'}
-                                    className="px-6 py-3 bg-[#262662] text-white rounded-lg font-bold text-[15px] hover:bg-[#1e1e4d] transition-colors"
+                                    className="px-6 py-3 bg-[#262662] text-white rounded-lg font-bold text-[15px] hover:bg-[#1e1e4d] transition-colors cursor-pointer"
                                 >
                                     Về trang chủ
                                 </button>

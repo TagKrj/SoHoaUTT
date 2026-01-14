@@ -121,4 +121,100 @@ export const deleteCertificate = async (id) => {
   }
 };
 
-export default { getCertificates, getCertificateById, createCertificate, deleteCertificate };
+/**
+ * Tạo chứng chỉ hàng loạt
+ */
+export const createCertificatesBatch = async (certificatesData, pdfFiles) => {
+  try {
+    // Prepare FormData
+    const formData = new FormData();
+    
+    // Add certificatesJson as string
+    const jsonString = JSON.stringify(certificatesData);
+    console.log('Sending certificatesJson:', jsonString);
+    formData.append('certificatesJson', jsonString);
+    
+    // Add all PDF files
+    console.log('PDF files count:', pdfFiles.length);
+    pdfFiles.forEach((file, index) => {
+      console.log(`Adding PDF file ${index}:`, file.name);
+      formData.append('pdfFiles', file);
+    });
+
+    console.log('Making request to:', API_ENDPOINTS.CERTIFICATES.CREATE_BATCH);
+
+    const response = await fetch(API_ENDPOINTS.CERTIFICATES.CREATE_BATCH, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      },
+      body: formData
+    });
+
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+
+    // Read response body once - không gọi 2 lần vì body stream sẽ hết
+    const contentType = response.headers.get('content-type');
+    let responseBody;
+    
+    if (contentType && contentType.includes('application/json')) {
+      responseBody = await response.json();
+    } else {
+      const text = await response.text();
+      responseBody = { message: text };
+    }
+
+    console.log('Response body:', responseBody);
+
+    if (!response.ok) {
+      const errorMsg = responseBody.message || responseBody.error || 'Lỗi tạo chứng chỉ hàng loạt';
+      throw new Error(`Server error (${response.status}): ${errorMsg}`);
+    }
+
+    return responseBody;
+  } catch (error) {
+    console.error('Batch create error:', error);
+    throw new Error(error.message);
+  }
+};
+
+/**
+ * Lấy metadata từ PDF file
+ * @param {File} pdfFile - PDF file binary
+ * @param {string} id - Certificate ID
+ */
+export const getMetadataFromPdf = async (pdfFile, id) => {
+  try {
+    if (!pdfFile || !id) {
+      throw new Error('Vui lòng cung cấp PDF file và ID');
+    }
+
+    const formData = new FormData();
+    formData.append('pdfFile', pdfFile);
+    formData.append('id', id);
+
+    console.log('Getting metadata from PDF:', pdfFile.name, 'ID:', id);
+
+    const response = await fetch(API_ENDPOINTS.CERTIFICATES.GET_METADATA, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Lỗi lấy metadata: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Metadata result:', result);
+    return result; // Returns { fileHash, metaJson }
+  } catch (error) {
+    console.error('Get metadata error:', error);
+    throw new Error(error.message);
+  }
+};
+
+export default { getCertificates, getCertificateById, createCertificate, deleteCertificate, createCertificatesBatch };
