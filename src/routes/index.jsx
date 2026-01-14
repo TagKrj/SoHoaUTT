@@ -5,12 +5,14 @@ import Certificate from '../pages/user/Certificate';
 import Batch from '../pages/user/Batch';
 import Verify from '../pages/user/Verify';
 import Search from '../pages/user/Search';
+import ProtectedRoute from './ProtectedRoute';
+import AuthRoute from './AuthRoute';
 
 // Auth Routes
 export const authRoutes = [
     {
         path: '/login',
-        element: <Login />
+        element: <AuthRoute element={<Login />} />
     }
 ];
 
@@ -18,23 +20,23 @@ export const authRoutes = [
 export const userRoutes = [
     {
         path: '/dashboard',
-        element: <Dashboard />
+        element: <ProtectedRoute element={<Dashboard />} />
     },
     {
         path: '/certificate',
-        element: <Certificate />
+        element: <ProtectedRoute element={<Certificate />} />
     },
     {
         path: '/batch',
-        element: <Batch />
+        element: <ProtectedRoute element={<Batch />} />
     },
     {
         path: '/verify',
-        element: <Verify />
+        element: <ProtectedRoute element={<Verify />} />
     },
     {
         path: '/search',
-        element: <Search />
+        element: <ProtectedRoute element={<Search />} />
     },
     {
         path: '/',
