@@ -19,7 +19,7 @@ export const API_ENDPOINTS = {
     GET_BY_ID: (id) => `${API_BASE_URL}/cert/read/${id}`,
     
     // Tạo chứng chỉ đơn lẻ
-    CREATE: `${API_BASE_URL}/cert/create`,
+    CREATE: `${API_BASE_URL}/cert/createCertificate`,
     
     // Cấp nhiều chứng chỉ cùng lúc (JSON metadata + PDF files)
     CREATE_BATCH: `${API_BASE_URL}/cert/createCertificatesBatch`,

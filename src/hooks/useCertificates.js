@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getCertificates, deleteCertificate } from '@/services/certificateService';
+import { getCertificates, deleteCertificate, createCertificate } from '@/services/certificateService';
 
 export const useCertificates = () => {
   const [certificates, setCertificates] = useState([]);
@@ -48,6 +48,23 @@ export const useCertificates = () => {
   }, [pageSize, fetchCertificates]);
 
   /**
+   * Tạo chứng chỉ mới
+   */
+  const createNew = useCallback(async (formData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await createCertificate(formData);
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
    * Xóa chứng chỉ
    */
   const removeCertificate = useCallback(async (id) => {
@@ -83,6 +100,7 @@ export const useCertificates = () => {
     pageSize,
     totalCount,
     fetchCertificates,
+    createNew,
     removeCertificate,
     goToPage,
     filterCertificates,

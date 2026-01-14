@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../layouts/MainLayout';
 import DatePicker from '../../components/DatePicker';
+import useCertificates from '../../hooks/useCertificates';
 import student from '../../assets/icons/student.svg';
 import sun from '../../assets/icons/sun.svg';
 import meta from '../../assets/icons/meta.svg';
@@ -9,20 +11,19 @@ import pdf from '../../assets/icons/pdf.svg';
 import cloud from '../../assets/icons/cloud.svg';
 
 const CertificatePage = () => {
+    const navigate = useNavigate();
+    const { createNew, loading, error } = useCertificates();
+
     const [formData, setFormData] = useState({
         studentId: '',
-        studentName: '',
-        email: '',
-        phone: '',
         certificateName: '',
         major: '',
-        issueDate: '',
-        gpa: '',
-        classification: '',
         metadata: ''
     });
     const [editorMode, setEditorMode] = useState('json'); // 'json' or 'visual'
     const [pdfFile, setPdfFile] = useState(null);
+    const [submitError, setSubmitError] = useState('');
+    const [submitSuccess, setSubmitSuccess] = useState('');
     const fileInputRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -114,20 +115,52 @@ const CertificatePage = () => {
     const handleCancel = () => {
         setFormData({
             studentId: '',
-            studentName: '',
-            email: '',
-            phone: '',
             certificateName: '',
             major: '',
-            issueDate: '',
-            gpa: '',
-            classification: '',
             metadata: ''
         });
+        setPdfFile(null);
+        setSubmitError('');
+        setSubmitSuccess('');
     };
 
-    const handleSubmit = () => {
-        console.log('Submitting form:', formData);
+    const handleSubmit = async () => {
+        // Validation
+        setSubmitError('');
+        setSubmitSuccess('');
+
+        if (!formData.studentId || !formData.certificateName || !formData.major) {
+            alert('Vui lòng điền đầy đủ thông tin chứng chỉ');
+            return;
+        }
+
+        if (!pdfFile) {
+            alert('Vui lòng upload file PDF');
+            return;
+        }
+
+        try {
+            // Prepare data for API
+            const certificateData = {
+                studentId: formData.studentId,
+                certificateName: formData.certificateName,
+                major: formData.major,
+                metadata: formData.metadata,
+                pdfFile: pdfFile
+            };
+
+            // Call service
+            const response = await createNew(certificateData);
+
+            // Show alert success
+            alert(`✓ ${response.message}`);
+
+            // Reset form immediately
+            handleCancel();
+
+        } catch (err) {
+            alert(err.message || 'Lỗi khi cấp chứng chỉ');
+        }
     };
 
     return (
@@ -141,128 +174,59 @@ const CertificatePage = () => {
 
                 {/* Form Container */}
                 <div className="bg-white rounded-lg shadow-sm">
-                    {/* Section 1: Student Information */}
-                    <div className="p-10 ">
-                        <div className="mb-7">
+
+                    {/* Section 1: Thông tin chứng chỉ */}
+                    <div className="p-10">
+                        <div className="mb-8">
                             <div className="flex items-center gap-2 mb-2">
                                 <img src={student} alt="" />
-                                <h2 className="text-lg font-bold text-[#262662]">Thông tin sinh viên</h2>
+                                <h2 className="text-lg font-bold text-[#262662]">Thông tin chứng chỉ</h2>
                             </div>
-                            <p className="text-[13px] text-[#666666]">Nhập mã sinh viên để tự động điền thông tin hoặc nhập thủ công</p>
+                            <p className="text-[13px] text-[#666666]">Nhập thông tin sinh viên và chi tiết chứng chỉ</p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-x-5 gap-y-6">
-                            {/* Student ID */}
+                        <div className="grid grid-cols-2 gap-5 gap-y-6">
+                            {/* Student ID - Col 1 */}
                             <div>
                                 <label className="block text-sm font-bold text-[#262662] mb-2">
                                     Mã sinh viên <span className="text-[#EF4444]">*</span>
                                 </label>
-                                <div className="relative flex gap-2">
-                                    <div className="flex-1 relative">
-                                        <svg className="absolute left-3.5 top-4 w-[18px] h-3.5" viewBox="0 0 18 14" fill="none">
-                                            <path d="M1 7H17M1 1H17M1 13H17" stroke="#999999" strokeWidth="2" strokeLinecap="round" />
-                                        </svg>
-                                        <input
-                                            type="text"
-                                            name="studentId"
-                                            value={formData.studentId}
-                                            onChange={handleInputChange}
-                                            className="w-full h-12 pl-12 pr-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                            placeholder='VD: SV2021001'
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={handleSearch}
-                                        className="h-12 px-6 bg-[#F1A027] text-white rounded-[7px] font-bold text-[13px] flex items-center gap-2 hover:bg-[#d89123] transition-colors cursor-pointer"
-                                    >
-                                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                                            <circle cx="5.5" cy="5.5" r="4.5" stroke="white" strokeWidth="2" />
-                                            <path d="M8.5 8.5L12 12" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                                        </svg>
-                                        Tìm
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Full Name */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Họ và tên <span className="text-[#EF4444]">*</span>
-                                </label>
                                 <div className="relative">
-                                    <svg className="absolute left-3.5 top-[15px] w-[18px] h-[20.57px]" viewBox="0 0 18 21" fill="none">
-                                        <path d="M9 10C11.7614 10 14 7.76142 14 5C14 2.23858 11.7614 0 9 0C6.23858 0 4 2.23858 4 5C4 7.76142 6.23858 10 9 10Z" fill="#999999" />
-                                        <path d="M18 20C18 16.134 13.9706 13 9 13C4.02944 13 0 16.134 0 20" fill="#999999" />
+                                    <svg className="absolute left-3.5 top-4 w-[18px] h-3.5" viewBox="0 0 18 14" fill="none">
+                                        <path d="M1 7H17M1 1H17M1 13H17" stroke="#999999" strokeWidth="2" strokeLinecap="round" />
                                     </svg>
                                     <input
                                         type="text"
-                                        name="studentName"
-                                        value={formData.studentName}
+                                        name="studentId"
+                                        value={formData.studentId}
                                         onChange={handleInputChange}
                                         className="w-full h-12 pl-12 pr-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                        placeholder='Nhập họ và tên sinh viên'
+                                        placeholder='SV2021001'
                                     />
                                 </div>
                             </div>
 
-                            {/* Email */}
+                            {/* Ngành Học - Col 2 */}
                             <div>
                                 <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Email <span className="text-[#EF4444]">*</span>
+                                    Ngành học <span className="text-[#EF4444]">*</span>
                                 </label>
                                 <div className="relative">
-                                    <svg className="absolute left-3.5 top-[17.25px] w-[18px] h-[13.5px]" viewBox="0 0 18 14" fill="none">
-                                        <path d="M1 1H17V13H1V1Z" stroke="#999999" strokeWidth="2" />
-                                        <path d="M1 1L9 7L17 1" stroke="#999999" strokeWidth="2" />
+                                    <svg className="absolute left-3.5 top-4 w-[18px] h-3.5" viewBox="0 0 18 14" fill="none">
+                                        <path d="M1 7H17M1 1H17M1 13H17" stroke="#999999" strokeWidth="2" strokeLinecap="round" />
                                     </svg>
                                     <input
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
+                                        type="text"
+                                        name="major"
+                                        value={formData.major}
                                         onChange={handleInputChange}
                                         className="w-full h-12 pl-12 pr-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                        placeholder='student@example.com'
+                                        placeholder='VD: Công nghệ thông tin'
                                     />
                                 </div>
                             </div>
 
-                            {/* Phone */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Số điện thoại
-                                </label>
-                                <div className="relative">
-                                    <svg className="absolute left-[14.75px] top-[15px] w-[16.5px] h-4" viewBox="0 0 17 16" fill="none">
-                                        <path d="M3.5 1H6.5L8 5.5L5.5 7C6.5 9.5 8.5 11.5 11 12.5L12.5 10L17 11.5V14.5C17 15.0523 16.5523 15.5 16 15.5H15C7.26801 15.5 1 9.23199 1 1.5V0.5C1 -0.0522847 1.44772 -0.5 2 -0.5H5L6.5 4L4 5.5" stroke="#999999" strokeWidth="2" />
-                                    </svg>
-                                    <input
-                                        type="tel"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleInputChange}
-                                        className="w-full h-12 pl-12 pr-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                        placeholder='0987788864'
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='px-10'>
-                        <div className='border-b border border-[#ebebeb]'></div>
-                    </div>
-                    {/* Section 2: Certificate Details */}
-                    <div className="p-10 border-b border-[#E0E0E0]">
-                        <div className="mb-7">
-                            <div className="flex items-center gap-2 mb-2">
-                                <img src={sun} alt="" />
-                                <h2 className="text-lg font-bold text-[#262662]">Chi tiết chứng chỉ</h2>
-                            </div>
-                            <p className="text-[13px] text-[#666666]">Nhập thông tin về chứng chỉ được cấp</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-x-5 gap-y-6">
-                            {/* Certificate Name */}
+                            {/* Certificate Name - Col 1-2 */}
                             <div className="col-span-2">
                                 <label className="block text-sm font-bold text-[#262662] mb-2">
                                     Tên chứng chỉ <span className="text-[#EF4444]">*</span>
@@ -277,95 +241,25 @@ const CertificatePage = () => {
                                         value={formData.certificateName}
                                         onChange={handleInputChange}
                                         className="w-full h-12 pl-12 pr-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                        placeholder='VD : Chứng chỉ Tốt nghiệp Đại học'
+                                        placeholder='Chứng chỉ Tốt nghiệp'
                                     />
                                 </div>
-                            </div>
-
-                            {/* Major */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Ngành học <span className="text-[#EF4444]">*</span>
-                                </label>
-                                <select
-                                    name="major"
-                                    value={formData.major}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                >
-                                    <option value="">--Chọn ngành học--</option>
-                                    <option value="CNTT">Công nghệ thông tin</option>
-                                    <option value="KT">Kỹ thuật</option>
-                                    <option value="QTKD">Quản trị kinh doanh</option>
-                                </select>
-                            </div>
-
-                            {/* Issue Date */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Ngày cấp <span className="text-[#EF4444]">*</span>
-                                </label>
-                                <DatePicker
-                                    value={formData.issueDate}
-                                    onChange={(value) => setFormData(prev => ({ ...prev, issueDate: value }))}
-                                    placeholder="dd/mm/yyyy"
-                                />
-                            </div>
-
-                            {/* GPA */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Điểm trung bình <span className="text-[#EF4444]">*</span>
-                                </label>
-                                <div className="relative">
-                                    <svg className="absolute left-[14.75px] top-[15px] w-[16.5px] h-4" viewBox="0 0 17 16" fill="none">
-                                        <path d="M8.5 1L10.5 6H15.5L11.5 9.5L13.5 14.5L8.5 11L3.5 14.5L5.5 9.5L1.5 6H6.5L8.5 1Z" stroke="#999999" strokeWidth="2" />
-                                    </svg>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        name="gpa"
-                                        value={formData.gpa}
-                                        onChange={handleInputChange}
-                                        className="w-full h-12 pl-12 pr-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                        placeholder='VD : 3.5'
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Classification */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#262662] mb-2">
-                                    Xếp loại <span className="text-[#EF4444]">*</span>
-                                </label>
-                                <select
-                                    name="classification"
-                                    value={formData.classification}
-                                    onChange={handleInputChange}
-                                    className="w-full h-12 px-4 bg-white border border-[#E0E0E0] rounded-[7px] text-[15px] text-[#262626] focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                                >
-                                    <option value="">--Chọn xếp loại--</option>
-                                    <option value="Xuất sắc">Xuất sắc</option>
-                                    <option value="Giỏi">Giỏi</option>
-                                    <option value="Khá">Khá</option>
-                                    <option value="Trung bình">Trung bình</option>
-                                </select>
                             </div>
                         </div>
                     </div>
 
-                    {/* Section 3: Metadata */}
-                    <div className="p-10 ">
-                        <div className="mb-7">
+                    {/* Section 2: Metadata */}
+                    <div className="p-10">
+                        <div className="mb-8">
                             <div className="flex items-center gap-2 mb-2">
                                 <img src={meta} alt="" />
-                                <h2 className="text-lg font-bold text-[#262662]">Thông tin bổ sung (Metadata)</h2>
+                                <h2 className="text-lg font-bold text-[#262662]">Thông tin bổ sung</h2>
                             </div>
-                            <p className="text-[13px] text-[#666666]">Thêm thông tin metadata dạng JSON cho chứng chỉ (không bắt buộc)</p>
+                            <p className="text-[13px] text-[#666666]">Thêm thông tin metadata dạng JSON (không bắt buộc)</p>
                         </div>
 
                         {/* Editor Controls */}
-                        <div className="flex gap-2 mb-5">
+                        {/* <div className="flex gap-2 mb-5">
                             <button
                                 onClick={() => setEditorMode('json')}
                                 className={`h-[33px] px-4 py-5 rounded-[7px] font-bold text-[13px] flex items-center gap-2 transition-colors cursor-pointer ${editorMode === 'json'
@@ -397,7 +291,7 @@ const CertificatePage = () => {
                                 </svg>
                                 Load Template
                             </button>
-                        </div>
+                        </div> */}
 
                         {/* Metadata Textarea */}
                         <div>
@@ -419,9 +313,9 @@ const CertificatePage = () => {
                     <div className='px-10'>
                         <div className='border-b border border-[#ebebeb]'></div>
                     </div>
-                    {/* Section 4: PDF Upload */}
-                    <div className="p-10 ">
-                        <div className="mb-5">
+                    {/* Section 3: PDF Upload */}
+                    <div className="p-10">
+                        <div className="mb-8">
                             <div className="flex items-center gap-2 mb-2">
                                 <img src={pdf} alt="" />
                                 <h2 className="text-lg font-bold text-[#262662]">File chứng chỉ PDF</h2>
@@ -491,7 +385,8 @@ const CertificatePage = () => {
                     <div className="p-10 flex justify-end gap-3">
                         <button
                             onClick={handleCancel}
-                            className="h-12 px-8 bg-white border border-[#E0E0E0] rounded-[7px] font-bold text-[15px] text-[#666666] flex items-center gap-2 hover:border-[#262662] transition-colors cursor-pointer"
+                            disabled={loading}
+                            className="h-12 px-8 bg-white border border-[#E0E0E0] rounded-[7px] font-bold text-[15px] text-[#666666] flex items-center gap-2 hover:border-[#262662] transition-colors cursor-pointer disabled:opacity-50"
                         >
                             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                                 <path d="M1 1L12 12M1 12L12 1" stroke="#666666" strokeWidth="2" strokeLinecap="round" />
@@ -500,12 +395,22 @@ const CertificatePage = () => {
                         </button>
                         <button
                             onClick={handleSubmit}
-                            className="h-12 px-8 bg-[#F1A027] rounded-[7px] font-bold text-[15px] text-white flex items-center gap-2 hover:bg-[#d89123] transition-colors cursor-pointer"
+                            disabled={loading}
+                            className="h-12 px-8 bg-[#F1A027] rounded-[7px] font-bold text-[15px] text-white flex items-center gap-2 hover:bg-[#d89123] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
-                                <path d="M1 5.5L5 9.5L14 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                            Cấp Chứng Chỉ
+                            {loading ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    Đang xử lý...
+                                </>
+                            ) : (
+                                <>
+                                    <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+                                        <path d="M1 5.5L5 9.5L14 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                    Cấp Chứng Chỉ
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
