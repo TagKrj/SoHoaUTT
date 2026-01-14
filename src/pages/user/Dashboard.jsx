@@ -61,7 +61,7 @@ const DashboardPage = () => {
                     <div className="bg-white rounded-lg p-6 shadow-sm">
                         <div className="flex items-start gap-4">
                             <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(241, 160, 39, 0.1)' }}>
-                                <img src={fileTextIcon} alt="" className="w-5 h-5" s />
+                                <img src={fileTextIcon} alt="" className="w-5 h-5" />
                             </div>
                             <div className="flex-1">
                                 <p className="text-[13px] text-[#666666] mb-2">Tổng chứng chỉ</p>

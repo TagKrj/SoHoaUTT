@@ -1,18 +1,29 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logoIcon from '../../assets/logos/logo-icon.svg';
 import uttLogo from '../../assets/logos/utt-logo.png';
+import useAuth from '../../hooks/useAuth';
 
 const Login = () => {
+    const navigate = useNavigate();
+    const { loading, error, handleLogin } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: '',
         remember: false
     });
+    const [loginError, setLoginError] = useState(null);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login attempt:', formData);
+        setLoginError(null);
+        try {
+            await handleLogin(formData.email, formData.password);
+            navigate('/dashboard');
+        } catch (err) {
+            setLoginError(err.message);
+        }
     };
 
     return (
@@ -67,7 +78,14 @@ const Login = () => {
 
                     {/* Login Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Username Field */}
+                        {/* Error Message */}
+                        {(loginError || error) && (
+                            <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                                {loginError || error}
+                            </div>
+                        )}
+
+                        {/* Username/Email Field */}
                         <div>
                             <label className="block text-[13px] text-[#374151] mb-2">
                                 Tên đăng nhập hoặc Email
@@ -75,8 +93,8 @@ const Login = () => {
                             <div className="relative">
                                 <input
                                     type="text"
-                                    value={formData.username}
-                                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#262662] focus:border-transparent"
                                     placeholder="Nhập tên đăng nhập hoặc email"
                                 />
@@ -132,9 +150,10 @@ const Login = () => {
                         {/* Login Button */}
                         <button
                             type="submit"
-                            className="w-full h-12 bg-[#F1A027] hover:bg-[#d89020] text-white font-bold text-[15px] rounded-lg transition-colors cursor-pointer"
+                            disabled={loading}
+                            className="w-full h-12 bg-[#F1A027] hover:bg-[#d89020] disabled:bg-[#d4a574] text-white font-bold text-[15px] rounded-lg transition-colors cursor-pointer"
                         >
-                            Đăng Nhập
+                            {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
                         </button>
 
                         {/* Forgot Password */}
