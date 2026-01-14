@@ -88,7 +88,7 @@ const Login = () => {
                         {/* Username/Email Field */}
                         <div>
                             <label className="block text-[13px] text-[#374151] mb-2">
-                                Tên đăng nhập hoặc Email
+                                Email
                             </label>
                             <div className="relative">
                                 <input
@@ -96,7 +96,7 @@ const Login = () => {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#262662] focus:border-transparent"
-                                    placeholder="Nhập tên đăng nhập hoặc email"
+                                    placeholder="Nhập email"
                                 />
                             </div>
                         </div>

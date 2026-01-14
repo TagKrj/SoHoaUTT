@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import sideBarAdmin from '../constants/sideBarAdmin';
 import sideBarUser from '../constants/sideBarUser';
 import logoutIcon from '../assets/icons/logout-icon.svg';
 import uttLogo from '../assets/logos/utt-logo.png';
+import useAuth from '../hooks/useAuth';
 
 const SideBar = ({ userRole = 'USER' }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { handleLogout } = useAuth();
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     // Chọn menu dựa trên role
     const menuItems = userRole === 'ADMIN' ? sideBarAdmin : sideBarUser;
@@ -18,9 +23,24 @@ const SideBar = ({ userRole = 'USER' }) => {
         avatar: userRole === 'ADMIN' ? 'AD' : 'US'
     });
 
-    const handleLogout = () => {
-        console.log('Logging out...');
-        // Add logout logic here
+    const onLogoutClick = () => {
+        setShowConfirm(true);
+    };
+
+    const onConfirmLogout = async () => {
+        setIsLoggingOut(true);
+        try {
+            await handleLogout();
+            setShowConfirm(false);
+            navigate('/login');
+        } catch (error) {
+            console.error('Logout failed:', error);
+            setIsLoggingOut(false);
+        }
+    };
+
+    const onCancelLogout = () => {
+        setShowConfirm(false);
     };
 
     return (
@@ -113,14 +133,45 @@ const SideBar = ({ userRole = 'USER' }) => {
 
                 {/* Logout Button */}
                 <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 h-[37px] bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors cursor-pointer"
+                    onClick={onLogoutClick}
+                    disabled={isLoggingOut}
+                    className="w-full flex items-center justify-center gap-2 h-[37px] bg-white/10 hover:bg-white/20 disabled:bg-white/5 border border-white/20 rounded-lg transition-colors cursor-pointer"
                 >
                     <img src={logoutIcon} alt="Logout" className="w-3 h-3" />
                     <span className="text-sm font-bold text-white">
-                        Đăng xuất
+                        {isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}
                     </span>
                 </button>
+
+                {/* Logout Confirm Dialog */}
+                {showConfirm && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 w-80 shadow-xl">
+                            <h2 className="text-lg font-bold text-[#262662] mb-3">
+                                Xác nhận đăng xuất
+                            </h2>
+                            <p className="text-sm text-[#666666] mb-6">
+                                Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={onCancelLogout}
+                                    disabled={isLoggingOut}
+                                    className="px-4 py-2 text-[#666666] bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 rounded-lg font-medium transition-colors cursor-pointer"
+                                >
+                                    Hủy
+                                </button>
+                                <button
+                                    onClick={onConfirmLogout}
+                                    disabled={isLoggingOut}
+                                    className="px-4 py-2 text-white bg-[#F1A027] hover:bg-[#d89020] disabled:bg-[#d4a574] rounded-lg font-medium transition-colors cursor-pointer"
+                                >
+                                    {isLoggingOut ? 'Đang xử lý...' : 'Đăng xuất'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

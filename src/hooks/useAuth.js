@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login } from '@/services/authService';
+import { login, logout } from '@/services/authService';
 
 const TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
@@ -29,10 +29,25 @@ export const useAuth = () => {
     }
   };
 
+  const handleLogout = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await logout();
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
-    handleLogin
+    handleLogin,
+    handleLogout
   };
 };
 
