@@ -147,19 +147,22 @@ const DashboardPage = () => {
 
                 {/* Verify Section */}
                 <div className="mb-8">
-                    <div className="grid grid-cols-2 gap-6">
-                        {/* Method 1: Upload PDF */}
-                        <div className="bg-white rounded-lg shadow-sm border border-[#E0E0E0]">
-                            <div className="p-8 border-b-2 border-[#F5F5F7]">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-[#F1A027] flex items-center justify-center shrink-0">
-                                        <span className="text-base font-bold text-white">1</span>
-                                    </div>
-                                    <h2 className="text-lg font-bold text-[#262662] mt-1">Upload File PDF</h2>
+                    <div className="bg-white rounded-lg shadow-sm border border-[#E0E0E0]">
+                        <div className="p-8 border-b-2 border-[#F5F5F7]">
+                            <div className="flex items-start gap-3">
+                                <div className="w-9 h-9 rounded-full bg-[#F1A027] flex items-center justify-center shrink-0">
+                                    <span className="text-base font-bold text-white">1</span>
                                 </div>
+                                <h2 className="text-lg font-bold text-[#262662] mt-1">Lấy thông tin MetaData</h2>
                             </div>
+                        </div>
 
-                            <div className="p-8">
+                        <div className="p-8">
+                            {/* PDF Upload */}
+                            <div className="mb-6">
+                                <label className="text-sm font-bold text-[#262662] block mb-3">
+                                    File PDF chứng chỉ
+                                </label>
                                 <input
                                     ref={fileInputRef}
                                     type="file"
@@ -170,7 +173,7 @@ const DashboardPage = () => {
 
                                 {!pdfFile ? (
                                     <div
-                                        className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer ${isDragging
+                                        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${isDragging
                                             ? 'border-[#F1A027] bg-[#FAFAFA]'
                                             : 'border-[#D1D5DB] bg-[#FAFAFA] hover:border-[#F1A027]'
                                             }`}
@@ -179,283 +182,116 @@ const DashboardPage = () => {
                                         onDrop={handleDrop}
                                         onClick={handleClickUpload}
                                     >
-                                        <div className="w-16 h-16 mx-auto mb-8 rounded-full bg-[rgba(241,160,39,0.1)] flex items-center justify-center">
-                                            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[rgba(241,160,39,0.1)] flex items-center justify-center">
+                                            <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
                                                 <path d="M14 7V21M14 7L9 12M14 7L19 12M7 24H21" stroke="#F1A027" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
                                         </div>
-                                        <h3 className="text-[15px] text-[#262626] mb-2">
-                                            Kéo thả file PDF chứng chỉ cần xác thực
+                                        <h3 className="text-[13px] text-[#262626] mb-1">
+                                            Kéo thả file PDF hoặc click để chọn
                                         </h3>
-                                        <p className="text-[13px] text-[#999999]">hoặc click để chọn file (Tối đa 10MB)</p>
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleClickUpload();
-                                            }}
-                                            className="mt-6 px-6 py-2 bg-[#F1A027] text-white rounded-lg font-bold text-sm hover:bg-[#d89123] transition-colors inline-flex items-center gap-2"
-                                        >
-                                            <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
-                                                <path d="M7 1V8M7 1L4 4M7 1L10 4M1 10H13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            Chọn file PDF
-                                        </button>
+                                        <p className="text-[12px] text-[#999999]">(Tối đa 10MB)</p>
                                     </div>
                                 ) : (
-                                    <div className="space-y-4">
-                                        <div className="border border-[#E0E0E0] rounded-lg bg-[#F9FAFB] p-4 flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-lg bg-white border border-[#E0E0E0] flex items-center justify-center shrink-0">
-                                                <img src={pdf} alt="" className="w-6 h-6" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-[#262662] truncate">{pdfFile.name}</p>
-                                                <p className="text-xs text-[#666666] mt-0.5">{formatFileSize(pdfFile.size)}</p>
-                                            </div>
-                                            <button
-                                                onClick={() => setPdfFile(null)}
-                                                className="w-8 h-8 rounded-lg bg-white border border-[#E0E0E0] flex items-center justify-center hover:border-red-500 hover:bg-red-50 transition-colors shrink-0"
-                                            >
-                                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                                    <path d="M1 1L11 11M1 11L11 1" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" />
-                                                </svg>
-                                            </button>
+                                    <div className="border border-[#E0E0E0] rounded-lg bg-[#F9FAFB] p-4 flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-white border border-[#E0E0E0] flex items-center justify-center shrink-0">
+                                            <img src={pdf} alt="" className="w-5 h-5" />
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Method 2: Certificate ID */}
-                        <div className="bg-white rounded-lg shadow-sm border border-[#E0E0E0]">
-                            <div className="p-8 border-b-2 border-[#F5F5F7]">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-[#F1A027] flex items-center justify-center shrink-0">
-                                        <span className="text-base font-bold text-white">2</span>
-                                    </div>
-                                    <h2 className="text-lg font-bold text-[#262662] mt-1">Xác Thực Kép</h2>
-                                </div>
-                            </div>
-
-                            <div className="p-8">
-                                <div className="grid grid-cols-1 gap-4">
-                                    <div>
-                                        <label className="text-sm font-semibold text-[#262662] block mb-2">
-                                            File PDF chứng chỉ
-                                        </label>
-                                        <input
-                                            ref={combinedFileInputRef}
-                                            type="file"
-                                            accept=".pdf,application/pdf"
-                                            onChange={handleCombinedFileSelect}
-                                            className="hidden"
-                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-bold text-[#262662] truncate">{pdfFile.name}</p>
+                                            <p className="text-xs text-[#666666] mt-0.5">{formatFileSize(pdfFile.size)}</p>
+                                        </div>
                                         <button
-                                            onClick={handleClickCombinedUpload}
-                                            className="w-full px-6 py-2 bg-[#F1A027] text-white rounded-lg font-bold text-sm hover:bg-[#d89123] transition-colors flex items-center justify-center gap-2"
+                                            onClick={() => setPdfFile(null)}
+                                            className="w-8 h-8 rounded-lg bg-white border border-[#E0E0E0] flex items-center justify-center hover:border-red-500 hover:bg-red-50 transition-colors shrink-0"
+                                            title="Xóa file"
                                         >
-                                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                                <path d="M7 1V10M7 1L4 4M7 1L10 4M1 13H13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                <path d="M1 1L11 11M1 11L11 1" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" />
                                             </svg>
-                                            Chọn file PDF
                                         </button>
-                                        {combinedPdfFile && (
-                                            <p className="text-xs text-[#059669] mt-2 truncate">✓ {combinedPdfFile.name}</p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <label className="text-sm font-bold text-[#262662] block mb-2">
-                                            Mã chứng chỉ
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={combinedId}
-                                            onChange={(e) => setCombinedId(e.target.value)}
-                                            placeholder="Nhập mã chứng chỉ..."
-                                            className="w-full px-4 py-2 border-2 border-[#E0E0E0] rounded-lg text-sm focus:outline-none focus:border-[#059669] transition-colors"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Verify Result */}
-                                {verifyResult && (
-                                    <div className="mt-4 p-4 bg-[rgba(16,185,129,0.1)] border-2 border-[#059669] rounded-lg">
-                                        <div className="flex items-start gap-3">
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                <path d="M10 1C5.03 1 1 5.03 1 10C1 14.97 5.03 19 10 19C14.97 19 19 14.97 19 10C19 5.03 14.97 1 10 1ZM8 14L4 10L5.41 8.59L8 11.17L14.59 4.58L16 6L8 14Z" fill="#059669" />
-                                            </svg>
-                                            <div className="flex-1 text-xs">
-                                                <h4 className="font-bold text-[#059669] mb-2">✓ Xác thực thành công!</h4>
-                                                <div className="space-y-1">
-                                                    <p><span className="text-[#666666]">ID:</span> <span className="font-semibold text-[#262662]">{verifyResult.certificateId}</span></p>
-                                                    <p className="break-all"><span className="text-[#666666]">Hash:</span> <span className="font-mono text-[#262662]">{verifyResult.fileHash.substring(0, 32)}...</span></p>
-                                                    <p className="break-all"><span className="text-[#666666]">Meta:</span> <span className="font-mono text-[#262662]">{verifyResult.metaJson}</span></p>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 )}
+                            </div>
 
-                                {/* Verify Error */}
-                                {verifyError && (
-                                    <div className="mt-4 p-4 bg-[rgba(239,68,68,0.1)] border-2 border-[#EF4444] rounded-lg">
-                                        <div className="flex items-start gap-3">
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                <path d="M10 1C5.03 1 1 5.03 1 10C1 14.97 5.03 19 10 19C14.97 19 19 14.97 19 10C19 5.03 14.97 1 10 1ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z" fill="#EF4444" />
-                                            </svg>
-                                            <div>
-                                                <h4 className="font-bold text-[#EF4444] text-xs">✗ Xác thực thất bại</h4>
-                                                <p className="text-xs text-[#666666] mt-1">{verifyError}</p>
+                            {/* ID Input */}
+                            <div className="mb-6">
+                                <label className="text-sm font-bold text-[#262662] block mb-3">
+                                    ID chứng chỉ
+                                </label>
+                                <input
+                                    type="text"
+                                    value={combinedId}
+                                    onChange={(e) => setCombinedId(e.target.value)}
+                                    placeholder="Nhập ID chứng chỉ cần xác thực..."
+                                    className="w-full px-4 py-3 border-2 border-[#E0E0E0] rounded-lg text-sm focus:outline-none focus:border-[#F1A027] transition-colors"
+                                />
+                            </div>
+
+                            {/* Get Metadata Button */}
+                            <button
+                                onClick={handleVerifyCombined}
+                                disabled={!pdfFile || !combinedId.trim() || isVerifying}
+                                className={`w-full py-3 rounded-lg font-bold text-[15px] flex items-center justify-center gap-2 transition-colors ${pdfFile && combinedId.trim() && !isVerifying
+                                    ? 'bg-[#F1A027] text-white hover:bg-[#d89123] cursor-pointer'
+                                    : 'bg-[#F1A027] text-white opacity-50 cursor-not-allowed'
+                                    }`}
+                            >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                                {isVerifying ? 'Đang lấy thông tin...' : 'Lấy thông tin MetaData'}
+                            </button>
+
+                            {/* Results */}
+                            {verifyResult && (
+                                <div className="mt-6 p-4 bg-[rgba(16,185,129,0.1)] border-2 border-[#059669] rounded-lg">
+                                    <div className="flex items-start gap-3 mb-4">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="shrink-0 mt-0.5">
+                                            <path d="M10 1C5.03 1 1 5.03 1 10C1 14.97 5.03 19 10 19C14.97 19 19 14.97 19 10C19 5.03 14.97 1 10 1ZM8 14L4 10L5.41 8.59L8 11.17L14.59 4.58L16 6L8 14Z" fill="#059669" />
+                                        </svg>
+                                        <h3 className="font-bold text-[#059669] text-sm">✓ Lấy thông tin thành công!</h3>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {/* File Hash */}
+                                        <div>
+                                            <p className="text-xs text-[#666666] mb-1 font-semibold">File Hash (SHA-256):</p>
+                                            <div className="bg-white px-3 py-2 rounded border border-[#E0E0E0] break-all">
+                                                <code className="text-xs font-mono text-[#262662]">{verifyResult.fileHash}</code>
                                             </div>
                                         </div>
+
+                                        {/* MetaData */}
+                                        <div>
+                                            <p className="text-xs text-[#666666] mb-1 font-semibold">MetaData:</p>
+                                            <div className="bg-white px-3 py-2 rounded border border-[#E0E0E0]">
+                                                <code className="text-xs font-mono text-[#262662] break-all">{verifyResult.metaJson}</code>
+                                            </div>
+                                        </div>
+
                                     </div>
-                                )}
+                                </div>
+                            )}
 
-                                <button
-                                    onClick={handleVerifyCombined}
-                                    disabled={!combinedPdfFile || !combinedId.trim() || isVerifying}
-                                    className={`w-full py-2 mt-4 rounded-lg font-bold text-[15px] transition-colors text-sm ${combinedPdfFile && combinedId.trim() && !isVerifying
-                                        ? 'bg-[#F1A027] text-white hover:bg-[#d89123] cursor-pointer'
-                                        : 'bg-[#F1A027] text-white opacity-50 cursor-not-allowed'
-                                        }`}
-                                >
-                                    {isVerifying ? 'Đang xác thực...' : 'Xác thực ngay'}
-                                </button>
-                            </div>
+                            {/* Error */}
+                            {verifyError && (
+                                <div className="mt-6 p-4 bg-[rgba(239,68,68,0.1)] border-2 border-[#EF4444] rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="shrink-0 mt-0.5">
+                                            <path d="M10 1C5.03 1 1 5.03 1 10C1 14.97 5.03 19 10 19C14.97 19 19 14.97 19 10C19 5.03 14.97 1 10 1ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z" fill="#EF4444" />
+                                        </svg>
+                                        <div>
+                                            <h4 className="font-bold text-[#EF4444] text-sm">✗ Lấy thông tin thất bại</h4>
+                                            <p className="text-xs text-[#666666] mt-1">{verifyError}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-4 gap-5 mb-8">
-                    {/* Stat Card 1 */}
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(241, 160, 39, 0.1)' }}>
-                                <img src={fileTextIcon} alt="" className="w-5 h-5" />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-[13px] text-[#666666] mb-2">Tổng chứng chỉ</p>
-                                <h3 className="text-[28px] font-bold text-[#262662] mb-2">{statsData.total.toLocaleString()}</h3>
-                                <div className="flex items-center gap-1 text-xs text-[#10B981]">
-                                    <img src={arrowUpIcon} alt="" className="w-3 h-3.5" style={{ filter: 'invert(55%) sepia(86%) saturate(434%) hue-rotate(94deg) brightness(101%) contrast(96%)' }} />
-                                    <span>{statsData.totalTrend}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stat Card 2 */}
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
-                                <img src={checkmarkCircleIcon} alt="" className="w-5 h-5" style={{ filter: 'invert(55%) sepia(86%) saturate(434%) hue-rotate(94deg) brightness(101%) contrast(96%)' }} />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-[13px] text-[#666666] mb-2">Đã cấp tháng này</p>
-                                <h3 className="text-[28px] font-bold text-[#262662] mb-2">{statsData.monthlyIssued}</h3>
-                                <div className="flex items-center gap-1 text-xs text-[#10B981]">
-                                    <img src={arrowUpIcon} alt="" className="w-3 h-3.5" style={{ filter: 'invert(55%) sepia(86%) saturate(434%) hue-rotate(94deg) brightness(101%) contrast(96%)' }} />
-                                    <span>{statsData.monthlyTrend}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stat Card 3 */}
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-                                <img src={clockIcon} alt="" className="w-5 h-5" />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-[13px] text-[#666666] mb-2">Chờ xác thực</p>
-                                <h3 className="text-[28px] font-bold text-[#262662] mb-2">{statsData.pending}</h3>
-                                <div className="flex items-center gap-1.5 text-xs text-[#262626]">
-                                    <div className="w-[11.14px] h-[1.71px] bg-[#262626]"></div>
-                                    <span>{statsData.pendingTrend}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stat Card 4 */}
-                    <div className="bg-white rounded-lg p-6 shadow-sm">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
-                                <img src={checkmarkCircleIcon} alt="" className="w-5 h-5" style={{ filter: 'invert(44%) sepia(96%) saturate(1691%) hue-rotate(201deg) brightness(100%) contrast(92%)' }} />
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-[13px] text-[#666666] mb-2">Đã xác thực</p>
-                                <h3 className="text-[28px] font-bold text-[#262662] mb-2">{statsData.verified.toLocaleString()}</h3>
-                                <div className="flex items-center gap-1 text-xs text-[#10B981]">
-                                    <img src={arrowUpIcon} alt="" className="w-3 h-3.5" style={{ filter: 'invert(55%) sepia(86%) saturate(434%) hue-rotate(94deg) brightness(101%) contrast(96%)' }} />
-                                    <span>{statsData.verifiedPercentage}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Filter Section */}
-                <div className="bg-white rounded-lg p-6 mb-6 shadow-sm">
-                    <div className="flex gap-4 items-end">
-                        {/* Filter 1 */}
-                        <div className="flex-1">
-                            <label className="block text-xs font-bold text-[#666666] mb-2">TRẠNG THÁI</label>
-                            <select
-                                value={selectedStatus}
-                                onChange={(e) => handleStatusChange(e.target.value)}
-                                className="w-full h-10 px-5 bg-white border border-[#E0E0E0] rounded-[7px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                            >
-                                {statusOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Filter 2 */}
-                        <div className="flex-1">
-                            <label className="block text-xs font-bold text-[#666666] mb-2">NGÀNH HỌC</label>
-                            <select
-                                value={selectedMajor}
-                                onChange={(e) => handleMajorChange(e.target.value)}
-                                className="w-full h-10 px-5 bg-white border border-[#E0E0E0] rounded-[7px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F1A027]/30 focus:border-[#F1A027] focus:shadow-lg focus:shadow-[#F1A027]/5 transition-all"
-                            >
-                                {majorOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Filter 3 */}
-                        <div className="flex-1">
-                            <label className="block text-xs font-bold text-[#666666] mb-2">TỪ NGÀY</label>
-                            <DatePicker
-                                value={fromDate}
-                                onChange={setFromDate}
-                                placeholder="dd/mm/yyyy"
-                            />
-                        </div>
-
-                        {/* Filter 4 */}
-                        <div className="flex-1">
-                            <label className="block text-xs font-bold text-[#666666] mb-2">ĐẾN NGÀY</label>
-                            <DatePicker
-                                value={toDate}
-                                onChange={setToDate}
-                                placeholder="dd/mm/yyyy"
-                            />
-                        </div>
-
-                        {/* Export Button */}
-                        <button className="h-10 px-5 bg-[#F1A027] text-white rounded font-bold text-sm flex items-center gap-2 hover:bg-[#d89123] transition-colors cursor-pointer">
-                            <img src={downloadIcon} alt="" className="w-3.5 h-[18.67px]" style={{ filter: 'brightness(0) invert(1)' }} />
-                            <span>Xuất Excel</span>
-                        </button>
-                    </div>
-                </div>
 
                 {/* Table Section */}
                 <div className="bg-white rounded-lg shadow-sm">

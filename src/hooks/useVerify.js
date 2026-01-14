@@ -134,7 +134,7 @@ export const useVerify = () => {
    * Verify with combined method (PDF + ID)
    */
   const handleVerifyCombined = useCallback(async () => {
-    if (!combinedPdfFile || !combinedId.trim()) {
+    if (!pdfFile || !combinedId.trim()) {
       alert('Vui lòng chọn file PDF và nhập mã chứng chỉ');
       return;
     }
@@ -144,14 +144,14 @@ export const useVerify = () => {
     setVerifyError(null);
 
     try {
-      const metadata = await getMetadataFromPdf(combinedPdfFile, combinedId);
+      const metadata = await getMetadataFromPdf(pdfFile, combinedId);
       console.log('API Response:', metadata);
       
       setVerifyResult({
         fileHash: metadata.fileHash,
         metaJson: metadata.metaJson,
         certificateId: combinedId,
-        fileName: combinedPdfFile.name
+        fileName: pdfFile.name
       });
     } catch (error) {
       console.error('Verify error:', error);
@@ -160,7 +160,7 @@ export const useVerify = () => {
     } finally {
       setIsVerifying(false);
     }
-  }, [combinedPdfFile, combinedId]);
+  }, [pdfFile, combinedId]);
 
   /**
    * Format file size
