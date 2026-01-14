@@ -78,7 +78,7 @@ const Login = () => {
                                     value={formData.username}
                                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                     className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#262662] focus:border-transparent"
-                                    placeholder=""
+                                    placeholder="Nhập tên đăng nhập hoặc email"
                                 />
                             </div>
                         </div>
@@ -94,7 +94,7 @@ const Login = () => {
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#262662] focus:border-transparent"
-                                    placeholder=""
+                                    placeholder="Nhập mật khẩu"
                                 />
                                 <button
                                     type="button"
