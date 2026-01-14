@@ -25,6 +25,30 @@ export const login = async (email, password) => {
 };
 
 /**
+ * Lấy thông tin profile
+ */
+export const getProfile = async () => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    
+    const response = await fetch(API_ENDPOINTS.AUTH.PROFILE, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Lỗi lấy thông tin profile');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+/**
  * Đăng xuất
  */
 export const logout = async () => {
@@ -54,4 +78,4 @@ export const logout = async () => {
   }
 };
 
-export default { login, logout };
+export default { login, getProfile, logout };

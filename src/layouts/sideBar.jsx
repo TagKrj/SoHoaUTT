@@ -9,19 +9,22 @@ import useAuth from '../hooks/useAuth';
 const SideBar = ({ userRole = 'USER' }) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { handleLogout } = useAuth();
+    const { user, handleLogout } = useAuth();
     const [showConfirm, setShowConfirm] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     // Chọn menu dựa trên role
     const menuItems = userRole === 'ADMIN' ? sideBarAdmin : sideBarUser;
 
-    // Mock user data
-    const [user] = useState({
-        name: userRole === 'ADMIN' ? 'Admin System' : 'User Name',
-        role: userRole === 'ADMIN' ? 'Quản trị viên' : 'Người dùng',
-        avatar: userRole === 'ADMIN' ? 'AD' : 'US'
-    });
+    // Lấy avatar từ name
+    const getAvatar = (name) => {
+        if (!name) return 'U';
+        const words = name.split(' ');
+        if (words.length >= 2) {
+            return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    };
 
     const onLogoutClick = () => {
         setShowConfirm(true);
@@ -118,15 +121,15 @@ const SideBar = ({ userRole = 'USER' }) => {
                 <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 rounded-full bg-[#F1A027] flex items-center justify-center">
                         <span className="text-white text-base font-bold">
-                            {user.avatar}
+                            {user ? getAvatar(user.name) : 'U'}
                         </span>
                     </div>
                     <div className="flex-1">
                         <h3 className="text-sm font-bold text-white leading-tight">
-                            {user.name}
+                            {user?.name || 'Loading...'}
                         </h3>
                         <p className="text-xs text-white/60 leading-tight mt-1">
-                            {user.role}
+                            {user?.role === 'ADMIN' ? 'Quản trị viên' : 'Người dùng'}
                         </p>
                     </div>
                 </div>
