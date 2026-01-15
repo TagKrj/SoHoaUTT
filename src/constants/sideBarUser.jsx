@@ -1,7 +1,7 @@
 import dashboardIcon from '../assets/icons/dashboard-icon.svg';
 import certificateIcon from '../assets/icons/certificate-icon.svg';
 import batchIcon from '../assets/icons/batch-icon.svg';
-import searchIcon from '../assets/icons/search-icon.svg';
+import contractIcon from '../assets/icons/contract.svg';
 import verifyIcon from '../assets/icons/danger-icon.svg';
 
 const sideBarUser = [
@@ -35,9 +35,9 @@ const sideBarUser = [
     },
     {
         id: 5,
-        name: 'Tra cứu',
-        path: '/search',
-        icon: searchIcon,
+        name: 'Hợp đồng',
+        path: '/contracts',
+        icon: contractIcon,
         active: false
     }
 ];

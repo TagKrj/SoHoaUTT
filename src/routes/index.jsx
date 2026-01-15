@@ -4,7 +4,7 @@ import Dashboard from '../pages/user/Dashboard';
 import Certificate from '../pages/user/Certificate';
 import Batch from '../pages/user/Batch';
 import Verify from '../pages/user/Verify';
-import Search from '../pages/user/Search';
+import Contracts from '../pages/user/Contract';
 import ProtectedRoute from './ProtectedRoute';
 import AuthRoute from './AuthRoute';
 
@@ -35,8 +35,8 @@ export const userRoutes = [
         element: <ProtectedRoute element={<Verify />} />
     },
     {
-        path: '/search',
-        element: <ProtectedRoute element={<Search />} />
+        path: '/contracts',
+        element: <ProtectedRoute element={<Contracts />} />
     },
     {
         path: '/',
