@@ -133,14 +133,6 @@ const ContractDetailModal = ({ contractId, isOpen, onClose }) => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Section 3: Raw Data */}
-                            <div className="bg-gray-50 rounded-lg p-5">
-                                <h3 className="text-sm font-bold text-[#262662] mb-3">DỮ LIỆU JSON</h3>
-                                <pre className="bg-white p-3 rounded border border-[#E0E0E0] text-xs overflow-x-auto">
-                                    {JSON.stringify(contract, null, 2)}
-                                </pre>
-                            </div>
                         </div>
                     )}
                 </div>

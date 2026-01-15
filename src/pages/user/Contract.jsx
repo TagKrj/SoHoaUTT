@@ -232,18 +232,14 @@ const ContractPage = () => {
                                                                 className="w-8 h-8 flex items-center justify-center border border-[#E0E0E0] rounded-[7px] hover:border-[#262662] transition-colors cursor-pointer"
                                                                 title="Xem chi tiết"
                                                             >
-                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="#262662" />
-                                                                </svg>
+                                                                <img src={eyeIcon} alt="View" className="w-3.5 h-[10.89px] icon-gray" />
                                                             </button>
                                                             <button
                                                                 onClick={() => setShowDeleteConfirm(contract.id)}
                                                                 className="w-8 h-8 flex items-center justify-center border border-[#E0E0E0] rounded-[7px] hover:border-red-500 transition-colors cursor-pointer"
                                                                 title="Xóa"
                                                             >
-                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                                                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z" fill="#EF4444" />
-                                                                </svg>
+                                                                <img src={trashIcon} alt="Delete" className="w-3.5 h-4 icon-gray" />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -278,11 +274,7 @@ const ContractPage = () => {
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                         <div className="bg-white rounded-lg p-6 max-w-sm shadow-xl">
                             <div className="flex items-start gap-4 mb-4">
-                                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" fill="#EF4444" />
-                                    </svg>
-                                </div>
+
                                 <div className="flex-1">
                                     <h3 className="text-lg font-bold text-[#262662]">Xóa Hợp Đồng</h3>
                                     <p className="text-sm text-gray-600 mt-1">Bạn có chắc chắn muốn xóa hợp đồng này? Hành động này không thể hoàn tác.</p>
